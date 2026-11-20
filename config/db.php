@@ -239,6 +239,17 @@ function initialize_database(PDO $pdo) {
         }
     }
 
-    // Notice: Dummy posts are completely removed.
-    // The database remains clean and only stores articles you create via Admin Panel.
+    // Notice: Dummy sample posts auto-purge
+    // Any leftover sample posts are permanently purged from database so your clinic blog stays clean
+    try {
+        $dummySlugs = [
+            'complete-guide-to-acne-scar-removal-treatments',
+            'prp-therapy-vs-hair-transplant-hair-restoration-comparison',
+            'laser-skin-resurfacing-even-skin-tone-youthful-glow',
+            'art-of-semi-permanent-makeup-microblading-lip-blush'
+        ];
+        $in = str_repeat('?,', count($dummySlugs) - 1) . '?';
+        $cleanupStmt = $pdo->prepare("DELETE FROM posts WHERE slug IN ($in)");
+        $cleanupStmt->execute($dummySlugs);
+    } catch (Exception $ign) {}
 }

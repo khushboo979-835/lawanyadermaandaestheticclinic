@@ -35,6 +35,27 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete_all_dummy') {
     exit;
 }
 
+// Check if action is delete_all (wipe all posts)
+if (isset($_GET['action']) && $_GET['action'] === 'delete_all') {
+    try {
+        // Clean uploaded blog images from disk
+        $stmt = $pdo->query("SELECT featured_image FROM posts WHERE featured_image LIKE 'uploads/blogs/%'");
+        while ($img = $stmt->fetchColumn()) {
+            $imagePath = ROOT_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $img);
+            if (file_exists($imagePath)) {
+                @unlink($imagePath);
+            }
+        }
+        $pdo->exec("DELETE FROM posts");
+
+        set_flash('success', 'All blog articles have been permanently removed from database.');
+    } catch (Exception $e) {
+        set_flash('danger', 'Error: ' . $e->getMessage());
+    }
+    header('Location: ' . ADMIN_URL . 'posts.php');
+    exit;
+}
+
 // Get post ID from POST or GET
 $postId = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 

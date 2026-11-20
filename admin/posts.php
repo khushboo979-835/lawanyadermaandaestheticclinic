@@ -152,8 +152,12 @@ $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC")->
                 <?php if (empty($posts)): ?>
                     <tr>
                         <td colspan="7" class="text-center py-5 text-muted">
-                            <i class="bi bi-search fs-1 d-block mb-2 text-muted"></i>
-                            No blog posts found matching your criteria.
+                            <i class="bi bi-journal-plus display-5 d-block mb-3 text-primary opacity-75"></i>
+                            <h5 class="fw-bold text-dark">No blog articles yet</h5>
+                            <p class="text-muted mb-3">Your clinic blog is clean. Click below to write and publish your first article.</p>
+                            <a href="<?= ADMIN_URL; ?>post-create.php" class="btn btn-primary-clinic btn-sm">
+                                <i class="bi bi-plus-circle-fill me-1"></i> Add Your First Blog Post
+                            </a>
                         </td>
                     </tr>
                 <?php else: ?>
