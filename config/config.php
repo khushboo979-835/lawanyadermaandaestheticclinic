@@ -64,8 +64,8 @@ if ($isLocalServer) {
 // ========================================================
 define('DB_HOST', 'localhost');              // Hostinger par hamesha 'localhost' hi rehta hai
 define('DB_NAME', 'u467991428_lawanya');     // Hostinger Database Name
-define('DB_USER', 'u467991428_lawanya');     // Hostinger Database Username (u467991428_lawanya)
-define('DB_PASS', '$Fn0~I=w3NS3');           // Hostinger Password
+define('DB_USER', 'u467991428_lawanya');     // Hostinger Database Username
+define('DB_PASS', 'O*k3gybl');               // Hostinger Password from modal
 define('DB_PORT', '3306');
 
 // SQLite Settings (Used automatically when on localhost)

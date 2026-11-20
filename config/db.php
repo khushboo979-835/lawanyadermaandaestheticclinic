@@ -23,24 +23,28 @@ function get_db_connection() {
             $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $pdo->exec('PRAGMA foreign_keys = ON;');
         } else {
-            // Attempt MySQL connection with smart user fallback
+            // Attempt MySQL connection with smart user and password fallback
             $connected = false;
-            $usersToTry = array_unique([DB_USER, DB_NAME, 'u467991428_lawanya', 'u467991428_admin', 'root']);
+            $usersToTry = array_unique([DB_USER, DB_NAME, 'u467991428_lawanya', 'u467991428_admin', 'u467991428_lawanya_user', 'u467991428_ngo_user', 'root']);
+            $passwordsToTry = array_unique([DB_PASS, 'O*k3gybl', 'O*k3gybI', '$Fn0~I=w3NS3']);
             $lastEx = null;
 
-            foreach ($usersToTry as $tryUser) {
-                if (empty($tryUser)) continue;
-                try {
-                    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', DB_HOST, DB_PORT, DB_NAME);
-                    $pdo = new PDO($dsn, $tryUser, DB_PASS, [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false,
-                    ]);
-                    $connected = true;
-                    break;
-                } catch (PDOException $ex) {
-                    $lastEx = $ex;
+            foreach ($passwordsToTry as $tryPass) {
+                if (empty($tryPass)) continue;
+                foreach ($usersToTry as $tryUser) {
+                    if (empty($tryUser)) continue;
+                    try {
+                        $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', DB_HOST, DB_PORT, DB_NAME);
+                        $pdo = new PDO($dsn, $tryUser, $tryPass, [
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                            PDO::ATTR_EMULATE_PREPARES => false,
+                        ]);
+                        $connected = true;
+                        break 2;
+                    } catch (PDOException $ex) {
+                        $lastEx = $ex;
+                    }
                 }
             }
 
