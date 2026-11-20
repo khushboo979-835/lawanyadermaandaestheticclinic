@@ -38,11 +38,13 @@
             <div class="col-lg-2 col-md-6 mb-4">
                 <h5 class="footer-section-title">Quick Navigation</h5>
                 <ul class="footer-nav-list">
-                    <li><a href="#home" class="footer-nav-link"><i class="bi bi-house-door me-2"></i>Home</a></li>
-                    <li><a href="#about" class="footer-nav-link"><i class="bi bi-info-circle me-2"></i>About Us</a></li>
-                    <li><a href="#services" class="footer-nav-link"><i class="bi bi-heart-pulse me-2"></i>Our Services</a></li>
-                    <li><a href="#gallery" class="footer-nav-link"><i class="bi bi-images me-2"></i>Gallery</a></li>
-                    <li><a href="#contact" class="footer-nav-link"><i class="bi bi-telephone me-2"></i>Contact</a></li>
+                    <li><a href="<?= $base_url; ?>#home" class="footer-nav-link"><i class="bi bi-house-door me-2"></i>Home</a></li>
+                    <li><a href="<?= $base_url; ?>#about" class="footer-nav-link"><i class="bi bi-info-circle me-2"></i>About Us</a></li>
+                    <li><a href="<?= $base_url; ?>#services" class="footer-nav-link"><i class="bi bi-heart-pulse me-2"></i>Our Services</a></li>
+                    <li><a href="<?= $base_url; ?>blogs.php" class="footer-nav-link"><i class="bi bi-journal-richtext me-2"></i>Clinical Blog</a></li>
+                    <li><a href="<?= $base_url; ?>#gallery" class="footer-nav-link"><i class="bi bi-images me-2"></i>Gallery</a></li>
+                    <li><a href="<?= $base_url; ?>#contact" class="footer-nav-link"><i class="bi bi-telephone me-2"></i>Contact</a></li>
+                    <li><a href="<?= $base_url; ?>admin/login.php" class="footer-nav-link" target="_blank"><i class="bi bi-lock me-2"></i>Admin Login</a></li>
                 </ul>
             </div>
 
@@ -159,12 +161,12 @@
         <!-- Bottom Footer -->
         <div class="footer-bottom">
             <div class="row align-items-center">
-                <div class="col-lg-6 col-md-6 mb-2 mb-md-0">
+                <div class="col-lg-9 col-md-6 mb-2 mb-md-0">
                     <p class="copyright-text">
-                        &copy; <?php echo date('Y'); ?> Lawanya Derma & Aesthetic Clinic. All rights reserved.
+                        &copy; <?php echo date('Y'); ?> Lawanya Derma & Aesthetic Clinic. All rights reserved | Designed and Managed by : <a href="https://coralwebtechnology.com/" target="_blank" class="text-white text-decoration-none">Coral Web Technology</a>
                     </p>
                 </div>
-                <div class="col-lg-6 col-md-6 text-md-end">
+                <div class="col-lg-3 col-md-6 text-md-end">
                     <div class="footer-legal-links">
                         <a href="privacy-policy.php" class="legal-link">Privacy Policy</a>
                         <span class="separator">|</span>
@@ -283,6 +285,15 @@ function sendToWhatsApp(name, phone, email, age, service, message) {
     // Create WhatsApp URL
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     
+    // Record inquiry into admin database asynchronously
+    try {
+        fetch('<?= $base_url; ?>api/submit-inquiry.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, email, age, service, message, source: 'website_contact' })
+        }).catch(err => console.log('Lead record info:', err));
+    } catch (e) {}
+
     // Open WhatsApp
     window.open(whatsappURL, '_blank');
     

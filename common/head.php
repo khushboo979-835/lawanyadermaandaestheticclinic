@@ -4,8 +4,19 @@ $page_title = isset($page_title) ? $page_title : 'Lawanya Derma & Aesthetic Clin
 $page_description = isset($page_description) ? $page_description : 'Leading dermatology and aesthetic clinic offering advanced skin treatments, hair restoration, laser procedures, weight loss programs and OPD services in professional healthcare environment.';
 $page_keywords = isset($page_keywords) ? $page_keywords : 'dermatology, skin treatment, hair restoration, laser treatment, weight loss, aesthetic clinic, OPD services, derma clinic';
 $page_url = isset($page_url) ? $page_url : 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-$page_image = isset($page_image) ? $page_image : 'https://' . $_SERVER['HTTP_HOST'] . '../assets/logo/logo.jpeg';
-$base_url = "http://localhost/lawanya/";
+$page_image = isset($page_image) ? $page_image : 'https://' . $_SERVER['HTTP_HOST'] . '/assets/logo/logo.jpeg';
+if (!isset($base_url)) {
+    $isLocal = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost:') === 0;
+    if ($isLocal) {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+        $subDir = preg_replace('/(\/admin|\/api).*$/', '', $scriptDir);
+        $subDir = rtrim($subDir, '/');
+        $base_url = $protocol . $_SERVER['HTTP_HOST'] . $subDir . '/';
+    } else {
+        $base_url = "https://lawanyadermaandaestheticclinic.com/";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

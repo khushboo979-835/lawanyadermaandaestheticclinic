@@ -14,16 +14,16 @@
                 <div class="col-md-6 text-end">
                     <div class="d-flex align-items-center justify-content-end">
                         <span class="me-3">Follow Us:</span>
-                        <a href="#" class="me-3" title="Facebook">
+                        <a href="https://www.facebook.com/photo/?fbid=122100123681002381&set=a.122100110643002381" class="me-3" title="Facebook">
                             <i class="bi bi-facebook"></i>
                         </a>
-                        <a href="#" class="me-3" title="Instagram">
+                        <a href="https://www.instagram.com/lawanya_derma/?igsh=MTVmbzUweTZnNWp2Mg%3D%3D&utm_source=qr#" class="me-3" title="Instagram">
                             <i class="bi bi-instagram"></i>
                         </a>
                         <!-- <a href="#" class="me-3" title="YouTube">
                         <i class="bi bi-youtube"></i>
                     </a> -->
-                        <a href="#" title="WhatsApp">
+                        <a href="https://wa.me/917042179159" title="WhatsApp">
                             <i class="bi bi-whatsapp"></i>
                         </a>
                     </div>
@@ -58,32 +58,37 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link active" href="<?=  $base_url; ?>">
+                        <a class="nav-link <?= (basename($_SERVER['PHP_SELF'] ?? '') === 'index.php') ? 'active' : ''; ?>" href="<?=  $base_url; ?>">
                             <i class="bi bi-house-door me-1"></i>Home
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">
+                        <a class="nav-link" href="<?= (basename($_SERVER['PHP_SELF'] ?? '') === 'index.php') ? '' : $base_url; ?>#about">
                             <i class="bi bi-info-circle me-1"></i>About Us
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">
+                        <a class="nav-link" href="<?= (basename($_SERVER['PHP_SELF'] ?? '') === 'index.php') ? '' : $base_url; ?>#services">
                             <i class="bi bi-heart-pulse me-1"></i>Services
                         </a>
                     </li>
 
-                
                     <li class="nav-item">
-                        <a class="nav-link" href="#gallery">
+                        <a class="nav-link" href="<?= (basename($_SERVER['PHP_SELF'] ?? '') === 'index.php') ? '' : $base_url; ?>#gallery">
                             <i class="bi bi-images me-1"></i>Gallery
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">
+                        <a class="nav-link <?= in_array(basename($_SERVER['PHP_SELF'] ?? ''), ['blogs.php', 'blog-details.php']) ? 'active' : ''; ?>" href="<?= $base_url; ?>blogs.php">
+                            <i class="bi bi-journal-richtext me-1"></i>Blog
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= (basename($_SERVER['PHP_SELF'] ?? '') === 'index.php') ? '' : $base_url; ?>#contact">
                             <i class="bi bi-geo-alt me-1"></i>Contact
                         </a>
                     </li>
