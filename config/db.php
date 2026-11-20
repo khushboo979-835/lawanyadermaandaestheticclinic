@@ -213,12 +213,35 @@ function initialize_database(PDO $pdo) {
         ");
     }
 
-    // Seed default admin if table is empty
-    $userCount = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-    if ($userCount == 0) {
-        $defaultPassword = password_hash('Admin@Lawanya2026', PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, full_name, role) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute(['admin', 'admin@lawanyaderma.com', $defaultPassword, 'Dr. Lawanya Administrator', 'admin']);
+    // Enforce sole clinic admin with exact credentials (admin@lawanyaderma.com / Admin@Lawanya2026)
+    try {
+        $adminEmail = 'admin@lawanyaderma.com';
+        $adminUsername = 'admin';
+        $plainPass = 'Admin@Lawanya2026';
+
+        // Remove any unauthorized / extraneous users so ONLY this 1 admin exists
+        $delExtra = $pdo->prepare("DELETE FROM users WHERE email != ? AND username != ?");
+        $delExtra->execute([$adminEmail, $adminUsername]);
+
+        // Check if admin user exists
+        $chkUser = $pdo->prepare("SELECT id, password FROM users WHERE email = ? OR username = ? LIMIT 1");
+        $chkUser->execute([$adminEmail, $adminUsername]);
+        $existingAdmin = $chkUser->fetch();
+
+        if (!$existingAdmin) {
+            $hashedPass = password_hash($plainPass, PASSWORD_BCRYPT);
+            $insAdmin = $pdo->prepare("INSERT INTO users (username, email, password, full_name, role) VALUES (?, ?, ?, ?, 'admin')");
+            $insAdmin->execute([$adminUsername, $adminEmail, $hashedPass, 'Dr. Lawanya Administrator']);
+        } else {
+            // Verify password; if changed or mismatched, ensure it matches Admin@Lawanya2026
+            if (!password_verify($plainPass, $existingAdmin['password'])) {
+                $hashedPass = password_hash($plainPass, PASSWORD_BCRYPT);
+                $updAdmin = $pdo->prepare("UPDATE users SET password = ?, email = ?, username = ? WHERE id = ?");
+                $updAdmin->execute([$hashedPass, $adminEmail, $adminUsername, $existingAdmin['id']]);
+            }
+        }
+    } catch (Exception $e) {
+        error_log('Admin sync notice: ' . $e->getMessage());
     }
 
     // Seed default categories if empty

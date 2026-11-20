@@ -86,18 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="login-body-content">
-        <!-- Demo Credentials Helper Banner -->
-        <div class="demo-creds-box">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-                <strong><i class="bi bi-key-fill text-primary me-1"></i> Admin Credentials</strong>
-                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:0.75rem;" onclick="fillDemoCreds()">
-                    Auto-Fill
-                </button>
-            </div>
-            <div>Email: <code id="demoEmail">admin@lawanyaderma.com</code></div>
-            <div>Password: <code id="demoPass">Admin@Lawanya2026</code></div>
-        </div>
-
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger d-flex align-items-center mb-3 py-2 px-3" role="alert" style="font-size: 0.88rem;">
                 <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
@@ -118,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="login_identity" class="form-label">Email or Username</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control border-start-0 ps-0" id="login_identity" name="login_identity" placeholder="admin@lawanyaderma.com" value="<?= e($emailOrUsername); ?>" required autofocus>
+                    <input type="text" class="form-control border-start-0 ps-0" id="login_identity" name="login_identity" placeholder="Enter your admin email or username" value="<?= e($emailOrUsername); ?>" required autofocus>
                 </div>
             </div>
 
@@ -161,11 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-function fillDemoCreds() {
-    document.getElementById('login_identity').value = 'admin@lawanyaderma.com';
-    document.getElementById('password').value = 'Admin@Lawanya2026';
-}
-
 function togglePasswordVisibility() {
     const passInput = document.getElementById('password');
     const toggleIcon = document.getElementById('toggleIcon');
