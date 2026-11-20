@@ -201,6 +201,9 @@ try {
                                         <a href="<?= ADMIN_URL; ?>post-edit.php?id=<?= $post['id']; ?>" class="btn btn-action" title="Edit post">
                                             <i class="bi bi-pencil"></i>
                                         </a>
+                                        <a href="<?= ADMIN_URL; ?>post-delete.php?id=<?= $post['id']; ?>" class="btn btn-action btn-action-danger" title="Delete post" onclick="return confirm('Are you sure you want to delete this blog post?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

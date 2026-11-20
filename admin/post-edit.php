@@ -41,27 +41,28 @@ $featuredImage = $post['featured_image'];
 
 // Handle update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        $errors[] = 'Security token invalid. Please reload and try again.';
-    } else {
-        $title = trim($_POST['title'] ?? '');
-        $slug = trim($_POST['slug'] ?? '');
-        $categoryId = (int)($_POST['category_id'] ?? 0);
-        $author = trim($_POST['author'] ?? 'Dr. Lawanya Clinic Team');
-        $readingTime = (int)($_POST['reading_time'] ?? 5);
-        $excerpt = trim($_POST['excerpt'] ?? '');
-        $content = trim($_POST['content'] ?? '');
-        $status = in_array($_POST['status'] ?? '', ['published', 'draft']) ? $_POST['status'] : 'published';
-        $metaTitle = trim($_POST['meta_title'] ?? '');
-        $metaDescription = trim($_POST['meta_description'] ?? '');
-        $metaKeywords = trim($_POST['meta_keywords'] ?? '');
+    $title = trim($_POST['title'] ?? '');
+    $slug = trim($_POST['slug'] ?? '');
+    $categoryId = (int)($_POST['category_id'] ?? 0);
+    $author = trim($_POST['author'] ?? 'Dr. Lawanya Clinic Team');
+    $readingTime = (int)($_POST['reading_time'] ?? 5);
+    $excerpt = trim($_POST['excerpt'] ?? '');
+    $content = trim($_POST['content'] ?? '');
+    $status = in_array($_POST['status'] ?? '', ['published', 'draft']) ? $_POST['status'] : 'published';
+    $metaTitle = trim($_POST['meta_title'] ?? '');
+    $metaDescription = trim($_POST['meta_description'] ?? '');
+    $metaKeywords = trim($_POST['meta_keywords'] ?? '');
 
-        if (empty($title)) {
-            $errors[] = 'Article title is required.';
+    if (empty($title)) {
+        $errors[] = 'Article title is required.';
+    }
+    if (empty($content) || trim(strip_tags($content)) === '') {
+        if (!empty($excerpt)) {
+            $content = '<p>' . nl2br(htmlspecialchars($excerpt)) . '</p>';
+        } else {
+            $content = '<p>' . htmlspecialchars($title) . '</p>';
         }
-        if (empty($content)) {
-            $errors[] = 'Article content is required.';
-        }
+    }
 
         if (empty($slug)) {
             $slug = slugify($title);
@@ -148,7 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = 'Database error: ' . $e->getMessage();
             }
         }
-    }
 }
 
 // Fetch categories
@@ -190,7 +190,7 @@ $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC")->
 
 <form id="postForm" method="POST" action="" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
-    <input type="hidden" name="content" id="postContent" value="<?= htmlspecialchars($content); ?>">
+    <textarea name="content" id="postContent" style="display:none;"><?= htmlspecialchars($content); ?></textarea>
     <input type="hidden" name="remove_existing_image" id="removeExistingImage" value="0">
 
     <div class="row g-4">

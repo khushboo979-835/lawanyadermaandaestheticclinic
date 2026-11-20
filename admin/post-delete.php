@@ -6,18 +6,38 @@
 
 require_once __DIR__ . '/includes/auth.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+// Check if user is logged in as admin
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: ' . BASE_URL . 'admin/login.php');
+    exit;
+}
+
+$pdo = get_db_connection();
+
+// Check if action is delete_all_dummy
+if (isset($_GET['action']) && $_GET['action'] === 'delete_all_dummy') {
+    try {
+        $dummySlugs = [
+            'complete-guide-to-acne-scar-removal-treatments',
+            'prp-therapy-vs-hair-transplant-hair-restoration-comparison',
+            'laser-skin-resurfacing-even-skin-tone-youthful-glow',
+            'art-of-semi-permanent-makeup-microblading-lip-blush'
+        ];
+        $in = str_repeat('?,', count($dummySlugs) - 1) . '?';
+        $stmt = $pdo->prepare("DELETE FROM posts WHERE slug IN ($in)");
+        $stmt->execute($dummySlugs);
+
+        set_flash('success', 'All dummy / sample posts have been permanently removed.');
+    } catch (Exception $e) {
+        set_flash('danger', 'Error: ' . $e->getMessage());
+    }
     header('Location: ' . ADMIN_URL . 'posts.php');
     exit;
 }
 
-if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-    set_flash('danger', 'Security verification failed.');
-    header('Location: ' . ADMIN_URL . 'posts.php');
-    exit;
-}
+// Get post ID from POST or GET
+$postId = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 
-$postId = (int)($_POST['id'] ?? 0);
 if ($postId <= 0) {
     set_flash('danger', 'Invalid post ID.');
     header('Location: ' . ADMIN_URL . 'posts.php');
@@ -25,8 +45,6 @@ if ($postId <= 0) {
 }
 
 try {
-    $pdo = get_db_connection();
-
     // Fetch post to check for uploaded image
     $stmt = $pdo->prepare("SELECT featured_image FROM posts WHERE id = ?");
     $stmt->execute([$postId]);
@@ -41,13 +59,13 @@ try {
             }
         }
 
-        // Delete post
+        // Delete post permanently from database
         $delStmt = $pdo->prepare("DELETE FROM posts WHERE id = ?");
         $delStmt->execute([$postId]);
 
-        set_flash('success', 'Blog article successfully deleted.');
+        set_flash('success', 'Blog article deleted permanently.');
     } else {
-        set_flash('danger', 'Post not found.');
+        set_flash('warning', 'Post was already deleted or does not exist.');
     }
 } catch (Exception $e) {
     set_flash('danger', 'Error deleting post: ' . $e->getMessage());

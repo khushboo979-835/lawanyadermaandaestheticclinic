@@ -80,7 +80,10 @@ $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC")->
         <h2 class="mb-1 fw-bold" style="color: var(--primary-dark);">Blog Articles</h2>
         <p class="text-muted mb-0">Create, edit, organize, and publish patient education articles.</p>
     </div>
-    <div>
+    <div class="d-flex gap-2">
+        <a href="<?= ADMIN_URL; ?>post-delete.php?action=delete_all_dummy" class="btn btn-outline-danger d-inline-flex align-items-center" onclick="return confirm('Are you sure you want to permanently remove all dummy/sample posts?');">
+            <i class="bi bi-trash me-1"></i> Clear Sample Posts
+        </a>
         <a href="<?= ADMIN_URL; ?>post-create.php" class="btn btn-primary-clinic d-inline-flex align-items-center">
             <i class="bi bi-plus-circle-fill me-2"></i> Add New Blog Post
         </a>
@@ -200,13 +203,9 @@ $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC")->
                                 <a href="<?= ADMIN_URL; ?>post-edit.php?id=<?= $post['id']; ?>" class="btn btn-action" title="Edit post">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="<?= ADMIN_URL; ?>post-delete.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this blog post?');">
-                                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
-                                    <input type="hidden" name="id" value="<?= $post['id']; ?>">
-                                    <button type="submit" class="btn btn-action btn-action-danger" title="Delete post">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <a href="<?= ADMIN_URL; ?>post-delete.php?id=<?= $post['id']; ?>" class="btn btn-action btn-action-danger" title="Delete post" onclick="return confirm('Are you sure you want to permanently delete this blog post?');">
+                                    <i class="bi bi-trash"></i>
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

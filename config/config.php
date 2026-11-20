@@ -50,8 +50,10 @@ if (!defined('BASE_URL')) {
 }
 
 // Database configuration
-// Smart detection: Local uses SQLite, Hostinger Live uses MySQL
-$isLocalServer = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost:') === 0;
+// Smart detection: Local/CLI uses SQLite, Hostinger Live uses MySQL
+$isCli = (php_sapi_name() === 'cli');
+$isLocalHost = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost:') === 0;
+$isLocalServer = $isCli || $isLocalHost;
 
 if ($isLocalServer) {
     define('DB_TYPE', 'sqlite');

@@ -178,16 +178,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Keep hidden textarea updated
+        function syncEditor() {
+            if (editorArea && hiddenContent) {
+                hiddenContent.value = editorArea.innerHTML;
+            }
+        }
+
         editorArea.addEventListener('input', function () {
-            hiddenContent.value = editorArea.innerHTML;
+            syncEditor();
             calculateReadingTime();
         });
+        editorArea.addEventListener('blur', syncEditor);
+        editorArea.addEventListener('keyup', syncEditor);
 
         // Sync before form submit
         const postForm = document.getElementById('postForm');
         if (postForm) {
             postForm.addEventListener('submit', function () {
-                hiddenContent.value = editorArea.innerHTML;
+                syncEditor();
+            });
+            postForm.querySelectorAll('button[type="submit"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    syncEditor();
+                });
             });
         }
     }
